@@ -20,18 +20,23 @@ def get_sales_data():
     """
     Get sales figures input from the user.
     """
-    print("Please enter sales data for the last market")
-    print("Data should be 6 figures seperated by commas")
-    print("Example: 10,20,30,40,50,60\n")
 
-    data_str = input("Enter your data here: ")
+    while True:
+        print("Please enter sales data for the last market")
+        print("Data should be 6 figures seperated by commas")
+        print("Example: 10,20,30,40,50,60\n")
 
-    sales_data = data_str.split(",")
-    validate_data(sales_data)
+        data_str = input("Enter your data here: ")
+
+        sales_data = data_str.split(",")
+
+        if validate_data(sales_data):
+            print("Data is valid")
+            break
+    return sales_data
 
 
 def validate_data(sales_data):
-
     """
     Inside the try, converts all string values into integers.
     Raises ValueError if strings cannot be converted into int,
@@ -45,6 +50,21 @@ def validate_data(sales_data):
             )
     except ValueError as err:
         print(f"Invalid data: {err}, please try again")
+        return False
+
+    return True
 
 
-get_sales_data()
+def update_sales_worksheet(sale_data):
+    """
+    Updates the sales worksheet with the latest data.
+    """
+    print("Updating sales worksheet\n")
+    sales_worksheet = SHEET.worksheet("sales")
+    sales_worksheet.append_row(sale_data)
+    print("Sales worksheet updated successfully\n")
+
+
+data = get_sales_data()
+sale_data = [int(value) for value in data]
+update_sales_worksheet(sale_data)
