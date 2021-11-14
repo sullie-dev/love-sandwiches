@@ -4,6 +4,7 @@
 from pprint import pprint
 import gspread
 from google.oauth2.service_account import Credentials
+from gspread.utils import numericise
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -90,6 +91,21 @@ def get_last_5_enteries_sales():
     return columns
 
 
+def calculate_stock_data(sales_data):
+    """
+    Calculate the average stock data for each tem type and add 10%.
+    """
+    print("Calculating stock data...\n")
+    new_stock_data = []
+    for column in sales_data:
+        int_column = [int(num) for num in column]
+        average = sum(int_column) / len(int_column)
+        stock_num = average * 1.1
+        new_stock_data.append(round(stock_num))
+
+    return new_stock_data
+
+
 def main():
     """Run all program fucntions"""
     data = get_sales_data()
@@ -97,7 +113,10 @@ def main():
     update_worksheets("sales", sale_data)
     new_surplus_data = calculate_surplus_data(sale_data)
     update_worksheets("surplus", new_surplus_data)
+    sales_columns = get_last_5_enteries_sales()
+    stock_data = calculate_stock_data(sales_columns)
+    update_worksheets("stock", stock_data)
 
 
 print("Welcome to the Love Sandwich Sales Data Automation\n")
-sales_columns = get_last_5_enteries_sales()
+main()
