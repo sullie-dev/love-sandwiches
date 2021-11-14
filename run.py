@@ -1,9 +1,9 @@
 # Your code goes here.
 # You can delete these comments, but do not change the name of this file
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
+from pprint import pprint
 import gspread
 from google.oauth2.service_account import Credentials
-from pprint import pprint
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -79,6 +79,17 @@ def update_worksheets(sheet, data):
     print(f"{sheet.capitalize()} worksheet updated successfully\n")
 
 
+def get_last_5_enteries_sales():
+    """Collect columns of datafrom the sales worksheet,collecting the last 5 enteries for each sandwhich and returns the data as a lists of lists"""
+    sales = SHEET.worksheet("sales")
+    columns = []
+
+    for indx in range(1, 7):
+        column = sales.col_values(indx)
+        columns.append(column[-5:])
+    return columns
+
+
 def main():
     """Run all program fucntions"""
     data = get_sales_data()
@@ -89,4 +100,4 @@ def main():
 
 
 print("Welcome to the Love Sandwich Sales Data Automation\n")
-main()
+sales_columns = get_last_5_enteries_sales()
